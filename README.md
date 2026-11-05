@@ -1,17 +1,21 @@
-﻿# EmpowerMSME - Full-Stack Financial Ecosystem for Indian MSMEs
+# EmpowerMSME - Full-Stack & Decoupled Financial Ecosystem for Indian MSMEs
 
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black?logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev)
-[![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?logo=prisma)](https://prisma.io)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0+-D71F00?logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org)
+[![LangChain](https://img.shields.io/badge/LangChain-Python-1C3C3C?logo=chainlink&logoColor=white)](https://python.langchain.com)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1-38B2AC?logo=tailwind-css)](https://tailwindcss.com)
 
-> An inclusive digital financial platform connecting MSMEs with investors, lenders, and government schemes across India.
+> An inclusive digital financial platform connecting MSMEs with investors, lenders, and government schemes across India — powered by a **decoupled Next.js 16 frontend** and a **high-performance Python FastAPI backend**.
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Architecture](#architecture)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -19,11 +23,8 @@
 - [User Roles](#user-roles)
 - [Getting Started](#getting-started)
 - [Environment Variables](#environment-variables)
-- [API Reference](#api-reference)
-- [Pages and Routes](#pages-and-routes)
-- [Key Components](#key-components)
-- [Authentication](#authentication)
-- [AI Features](#ai-features)
+- [API Reference & Swagger Docs](#api-reference--swagger-docs)
+- [AI & ML Features](#ai-features)
 - [Scripts](#scripts)
 - [Deployment](#deployment)
 
@@ -31,14 +32,44 @@
 
 ## Overview
 
-**EmpowerMSME** is a production-grade, full-stack web platform designed to democratize access to financial services for Micro, Small, and Medium Enterprises (MSMEs) across India. The platform bridges the gap between MSME owners, individual investors, and institutional lenders through a transparent, technology-driven ecosystem.
+**EmpowerMSME** is a production-grade, full-stack financial technology ecosystem designed to democratize access to financial services for Micro, Small, and Medium Enterprises (MSMEs) across India. The platform bridges the gap between MSME owners, individual investors, and institutional lenders through a transparent, technology-driven marketplace.
 
 ### Problems it solves
 
 - MSMEs struggle to access formal credit due to lack of verifiable credit history
 - Investors have no curated marketplace to discover verified MSME investment opportunities
 - Traditional lending is opaque, slow, and excludes small businesses
-- Financial literacy among MSME owners is limited
+- Financial literacy regarding government subsidy schemes is limited
+
+---
+
+## Architecture
+
+The platform uses a modern, decoupled microservice-ready architecture:
+
+```text
+               ┌────────────────────────────────────────────────────────┐
+               │              Next.js 16 (React 19) Frontend            │
+               │              Port 3000 (UI / State / SSR)              │
+               └───────────────────────────┬────────────────────────────┘
+                                           │
+                         HTTP REST + JWT Bearer Tokens
+                                           │
+                                           ▼
+               ┌────────────────────────────────────────────────────────┐
+               │              Python FastAPI Backend (Port 8000)         │
+               ├───────────────────────────┬────────────────────────────┤
+               │  Interactive Swagger UI   │  Pydantic v2 Validators    │
+               │  OAuth2 / JWT RBAC Auth   │  7-Factor Credit Engine    │
+               │  SQLAlchemy 2.0 ORM       │  LangChain + Gemini RAG    │
+               └───────────────────────────┴────────────────────────────┘
+                                           │
+                         SQLite / PostgreSQL Database Engine
+```
+
+* **Frontend:** Built with Next.js 16 (App Router), React 19, Tailwind CSS v4, and Radix UI / shadcn components.
+* **Backend:** Asynchronous Python FastAPI backend with Pydantic v2 schemas, SQLAlchemy 2.0 ORM, and automated OpenAPI documentation at `http://127.0.0.1:8000/docs`.
+* **AI/RAG:** Python LangChain & Google Gemini 1.5 Flash/Pro with semantic vector search over official Indian MSME schemes.
 
 ---
 
@@ -48,17 +79,16 @@
 
 | Feature | Description |
 |---|---|
-| Business Dashboard | Real-time KPIs - revenue, active loans, funding raised, credit score gauge |
+| Business Dashboard | Real-time KPIs — revenue, active loans, funding raised, credit score gauge |
 | Loan Applications | Apply for loans, track lifecycle (Submitted to Disbursed), upload documents |
 | Campaign Management | Create fundraising campaigns, set funding goals, track investor engagement |
-| AI Credit Scoring Engine | 7-factor transparent credit evaluation (300-900 scale) with full explainability |
+| AI Credit Scoring Engine | 7-factor transparent credit evaluation (300–900 scale) with full explainability |
 | Revenue-Based Financing (RBF) | Alternative financing with interactive sliders and RBF vs EMI comparison |
 | P2P Lending Circles | Community-based group savings and fund rotation with trust scores |
 | Repayments Dashboard | EMI tracking, balance trend charts, overdue alerts, payment history |
 | AI Story Builder | Generate 3 pitch variants (Professional, Emotional, Data-Driven) |
 | AI Knowledge Academy | RAG-powered chatbot covering MUDRA, PMEGP, GST, SIDBI schemes |
 | Business Analytics | Revenue trends, loan volume charts, sector distribution |
-| Messages | Investor messaging interface |
 | Profile and KYC | Business profile management, document uploads, KYC status |
 
 ### For Investors (Individual Role)
@@ -77,31 +107,20 @@
 
 | Feature | Description |
 |---|---|
-| Admin Dashboard | Platform-wide KPIs - total users, businesses, loans, investments |
+| Admin Dashboard | Platform-wide KPIs — total users, businesses, loans, investments |
 | User Management | View all users, approve/reject KYC, manage roles |
 | Business Verification | Review and verify MSME business profiles and KYC documents |
 | Loan Management | View all loan applications, update status |
 | Campaign Oversight | Monitor active campaigns, flag suspicious activity |
 | Platform Analytics | User growth charts, loan volume trends, default rates |
-| Audit Logs | Immutable audit trail - Auth, Financial, KYC, Security events |
+| Audit Logs | Immutable audit trail — Auth, Financial, KYC, Security events |
 | Security Console | Live login activity tracker, MFA controls |
-| Platform Settings | Global configuration, fee rates, platform parameters |
-
-### Public Features
-
-| Feature | Description |
-|---|---|
-| Landing Page | Hero section, features overview, impact stats, testimonials |
-| Marketplace | Public MSME listing with search and sector filters |
-| SMS Spam Checker | Detect financial fraud SMS with rule-based analysis |
-| About / Impact | Platform mission, impact metrics |
-| Academy | Free educational content on government schemes |
 
 ---
 
 ## Tech Stack
 
-### Frontend
+### Frontend (Next.js)
 
 | Technology | Version | Purpose |
 |---|---|---|
@@ -110,196 +129,60 @@
 | Tailwind CSS | 4.1.9 | Utility-first styling |
 | shadcn/ui | Latest | Pre-built accessible UI components (Radix UI based) |
 | Framer Motion | 12.38 | Animations, page transitions, spring physics |
-| Recharts | 2.15.4 | Data visualization - area, bar, pie, line charts |
-| Lucide React | 0.454 | Icon library (500+ icons) |
-| next-themes | 0.4.6 | Dark/light mode support |
+| Recharts | 2.15.4 | Data visualization — area, bar, pie, line charts |
+| Lucide React | 0.454 | Icon library |
 
-### Backend
+### Backend (Python FastAPI)
 
 | Technology | Version | Purpose |
 |---|---|---|
-| Next.js API Routes | 16.1.6 | Serverless API endpoints |
-| Prisma ORM | 6.19.3 | Type-safe database client and migrations |
-| NextAuth.js | 4.24.14 | Authentication - JWT sessions, credentials provider |
-| bcryptjs | 3.0.3 | Secure password hashing |
-| Zod | 3.25.76 | Request validation and schema enforcement |
-| react-hook-form | 7.60 | Performant form state management |
+| FastAPI | 0.115+ | High-performance asynchronous Python web framework |
+| Uvicorn | 0.32+ | ASGI web server |
+| Pydantic | 2.9+ | Data validation and schema enforcement |
+| SQLAlchemy | 2.0+ | Object Relational Mapper for relational databases |
+| Alembic | 1.13+ | Database schema migrations |
+| python-jose | 3.3+ | JWT token generation and verification |
+| bcrypt | 5.0+ | Secure password salt hashing |
 
-### Database
-
-| Technology | Purpose |
-|---|---|
-| SQLite (development) | Local development via prisma/dev.db |
-| Prisma Migrations | Schema versioning and migrations |
-| PostgreSQL (production) | Recommended production database |
-
-### AI and ML
+### AI and Machine Learning
 
 | Technology | Purpose |
 |---|---|
-| LangChain 1.5.3 | RAG pipeline orchestration |
-| @langchain/google-genai 2.2.0 | Google Gemini AI integration |
-| Local Knowledge Base | Custom MSME knowledge base for chatbot |
-| Weighted Linear Model | Transparent credit scoring algorithm |
+| LangChain Python | RAG pipeline orchestration and prompt chains |
+| @langchain/google-genai | Google Gemini AI integration (embeddings & generation) |
+| Semantic Knowledge Base | Curated MSME knowledge base on MUDRA, PMEGP, GST, SIDBI |
+| 7-Factor Weighted Model | Interpretable, transparent credit scoring algorithm |
 
 ---
 
 ## Project Structure
 
+```text
+Empower_MSME/
+├── app/                          # Next.js 16 Frontend (App Router)
+│   ├── page.jsx                  # Public landing page
+│   ├── marketplace/              # Browse MSME campaigns
+│   ├── business/                 # MSME Owner Portal
+│   ├── user/                     # Investor Portal
+│   ├── admin/                    # Platform Admin Portal
+│   └── api/                      # Next.js Route Handlers
+├── backend/                      # Python FastAPI Backend
+│   ├── app/
+│   │   ├── api/                  # FastAPI Endpoints (auth, loans, campaigns, etc.)
+│   │   ├── core/                 # Config, Database Session, JWT Security
+│   │   ├── models/               # SQLAlchemy Models (User, Loan, Campaign, etc.)
+│   │   ├── schemas/              # Pydantic v2 Request/Response Schemas
+│   │   ├── services/             # Credit Engine, RAG Pipeline, Audit Logger
+│   │   └── main.py               # FastAPI App Assembly & Middleware
+│   ├── seed.py                   # Demo database seeder
+│   ├── test_api.py               # 12 Automated integration test suites
+│   ├── run.py                    # Server startup script
+│   └── requirements.txt          # Python dependencies
+├── components/                   # Reusable UI & Widget components
+├── lib/                          # Client utilities and auth context
+├── prisma/                       # Prisma Schema (fallback/dev)
+└── package.json
 ```
-empower-msme/
-|-- app/
-|   |-- page.jsx                  # Landing page (public)
-|   |-- layout.jsx                # Root layout with providers
-|   |-- globals.css
-|   |-- about/
-|   |-- impact/
-|   |-- marketplace/
-|   |-- academy/
-|   |-- sms-spam-check/
-|   |-- auth/
-|   |   |-- select/               # Role selection page
-|   |   |-- business/
-|   |   |   |-- login/
-|   |   |   `-- register/
-|   |   `-- user/
-|   |       |-- login/
-|   |       `-- register/
-|   |-- admin/                    # Admin portal (protected)
-|   |   |-- login/
-|   |   |-- dashboard/
-|   |   |-- users/
-|   |   |-- businesses/
-|   |   |-- loans/
-|   |   |-- campaigns/
-|   |   |-- analytics/
-|   |   |-- audit/
-|   |   |-- security/
-|   |   `-- settings/
-|   |-- business/                 # Business portal (protected)
-|   |   |-- dashboard/
-|   |   |-- loans/
-|   |   |-- campaigns/
-|   |   |-- credit-score/
-|   |   |-- rbf/
-|   |   |-- lending-circles/
-|   |   |-- repayments/
-|   |   |-- funding/
-|   |   |-- ai-academy/
-|   |   |-- story-builder/
-|   |   |-- analytics/
-|   |   |-- messages/
-|   |   |-- profile/
-|   |   `-- settings/
-|   |-- user/                     # Investor portal (protected)
-|   |   |-- dashboard/
-|   |   |-- campaigns/
-|   |   |-- explore/
-|   |   |-- applications/
-|   |   |-- analytics/
-|   |   |-- academy/
-|   |   |-- chatbot/
-|   |   |-- profile/
-|   |   `-- settings/
-|   `-- api/                      # API Route Handlers
-|       |-- auth/
-|       |   |-- [...nextauth]/
-|       |   `-- register/
-|       |-- loans/
-|       |-- campaigns/
-|       |   `-- invest/
-|       |-- repayments/
-|       |-- credit/
-|       |   `-- evaluate/
-|       |-- analytics/
-|       |   |-- user/
-|       |   `-- business/
-|       |-- lending-circles/
-|       |-- chat/
-|       |-- rag/
-|       |-- admin/
-|       |   |-- users/
-|       |   `-- businesses/
-|       |-- business/
-|       |   `-- profile/
-|       `-- user/
-|           `-- investments/
-|-- components/
-|   |-- ui/                       # shadcn/ui primitives + custom components
-|   |   |-- metric-card.jsx       # Animated KPI counter card
-|   |   |-- credit-gauge.jsx      # SVG semicircle credit gauge
-|   |   `-- ... (30+ components)
-|   |-- business-sidebar.jsx
-|   |-- user-sidebar.jsx
-|   |-- admin-sidebar.jsx
-|   |-- public-navbar.jsx
-|   |-- global-footer.jsx
-|   |-- auth-provider.jsx
-|   `-- floating-spam-check.jsx
-|-- lib/
-|   |-- prisma.js                 # Prisma client singleton
-|   |-- auth-context.jsx          # Auth context and useAuth hook
-|   |-- knowledge-base.js         # MSME knowledge base for chatbot
-|   |-- rag-pipeline.js           # LangChain RAG setup
-|   `-- utils.ts                  # Tailwind class merge utility
-|-- contexts/
-|   `-- language-context.jsx      # Multi-language i18n context
-|-- prisma/
-|   |-- schema.prisma             # Database schema definition
-|   `-- dev.db                    # SQLite database (dev only)
-|-- scripts/
-|   |-- seed.mjs                  # Database seeding script
-|   `-- test.mjs                  # API integration tests
-|-- public/                       # Static assets
-|-- middleware.js                 # Route protection middleware
-|-- next.config.mjs
-`-- package.json
-```
-
----
-
-## Database Schema
-
-The platform uses Prisma ORM with SQLite (development) or PostgreSQL (production).
-
-**User** - Core authentication entity  
-Fields: id, email, passwordHash, role (BUSINESS/INVESTOR/ADMIN), kycStatus (PENDING/VERIFIED/REJECTED), createdAt, updatedAt
-
-**BusinessProfile** - MSME business information  
-Fields: id, userId, name, sector, location, udyamId (unique), employees, businessAge, website, description, fundingGoal, creditScore (300-900, default 300), kycDocs (JSON string)
-
-**Campaign** - Fundraising campaigns created by businesses  
-Fields: id, businessId, title, description, goal, raised (default 0), riskRating (Low/Medium/High), roi, repaymentModel, status (pending/active/funded/expired)
-
-**Investment** - Investor investments in campaigns  
-Fields: id, campaignId, investorId, amount, status (active/completed/defaulted)
-
-**Loan** - Loan applications from businesses  
-Fields: id, businessId, amount, platformFee, interestRate, tenureMonths, status (pending/approved/disbursed/repaid), bankName, accountNum, ifsc
-
-**RepaymentLedger** - EMI repayment schedule and history  
-Fields: id, loanId, dueDate, amountDue, amountPaid, status (pending/paid/missed), paidDate
-
-**LendingCircle** - P2P savings groups  
-Fields: id, name, contributionAmount, frequency, maxMembers, currentRound, status (active/completed)
-
-**LendingCircleMember** - Members of lending circles  
-Fields: id, circleId, userId, contributionStatus, trustScore
-
-**AuditLog** - Immutable platform event log  
-Fields: id, action, userEmail, userId, ipAddress, category (Auth/KYC/Financial/Security), status (success/warning/danger/info), metadata, timestamp
-
----
-
-## User Roles
-
-| Role | Portal | Login Path | Description |
-|---|---|---|---|
-| BUSINESS | /business/* | /auth/business/login | MSME owners - loans, campaigns, credit scoring |
-| INVESTOR | /user/* | /auth/user/login | Individual investors - browse campaigns, invest, portfolio |
-| ADMIN | /admin/* | /admin/login | Platform administrators - full oversight and KYC approval |
-
-Role selection is done at /auth/select.
 
 ---
 
@@ -307,9 +190,11 @@ Role selection is done at /auth/select.
 
 ### Prerequisites
 
-- Node.js v18 or higher - https://nodejs.org
-- npm v9+ (included with Node.js)
-- Git
+- **Node.js:** v18 or higher — https://nodejs.org
+- **Python:** 3.11 or 3.12 — https://python.org
+- **Git**
+
+---
 
 ### 1. Clone the repository
 
@@ -318,464 +203,158 @@ git clone https://github.com/Nikhil7704/EMPOWER_MSME.git
 cd EMPOWER_MSME
 ```
 
-### 2. Install dependencies
+---
+
+### 2. Frontend Setup (Next.js)
 
 ```bash
+# Install frontend dependencies
 npm install
-```
 
-### 3. Configure environment variables
-
-Create a `.env` file in the root directory:
-
-```env
-# Database - SQLite for local development
-DATABASE_URL="file:./prisma/dev.db"
-
-# NextAuth - required for authentication
-NEXTAUTH_SECRET="your-random-secret-key-minimum-32-characters"
-NEXTAUTH_URL="http://localhost:3000"
-
-# Optional: Google Gemini AI for RAG-powered features
-# GEMINI_API_KEY="your-google-gemini-api-key"
-```
-
-### 4. Set up the database
-
-```bash
-# Apply the Prisma schema to create all tables
-npx prisma db push
-
-# Optional: seed with sample data
-node scripts/seed.mjs
-```
-
-### 5. Start the development server
-
-```bash
+# Start Next.js development server
 npm run dev
 ```
 
-Visit http://localhost:3000 - the app runs with hot reload powered by Turbopack.
+The frontend will run at `http://localhost:3000`.
 
-### Demo Accounts (after seeding)
+---
 
+### 3. Backend Setup (FastAPI)
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Create and activate virtual environment
+python -m venv venv
+
+# Windows:
+.\venv\Scripts\activate
+# macOS / Linux:
+source venv/bin/activate
+
+# Install Python requirements
+pip install -r requirements.txt
+
+# Seed the database with demo accounts
+python seed.py
+
+# Run automated tests
+python test_api.py
+
+# Launch FastAPI server
+python run.py
+```
+
+* **FastAPI Server:** `http://127.0.0.1:8000`
+* **Interactive Swagger UI:** `http://127.0.0.1:8000/docs`
+* **ReDoc Documentation:** `http://127.0.0.1:8000/redoc`
+
+#### Demo Accounts (Pre-configured):
 | Role | Email | Password |
 |---|---|---|
-| Business | business@demo.com | demo1234 |
-| Investor | investor@demo.com | demo1234 |
-| Admin | Any email | Any password (sandbox) |
+| Business | `business@demo.com` | `demo1234` |
+| Investor | `investor@demo.com` | `demo1234` |
+| Admin | `admin@demo.com` | `demo1234` |
 
 ---
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|---|---|---|
-| DATABASE_URL | Yes | DB connection string. Use file:./prisma/dev.db for SQLite |
-| NEXTAUTH_SECRET | Yes | Random 32+ char string for JWT signing |
-| NEXTAUTH_URL | Yes | Full base URL (http://localhost:3000 in development) |
-| GEMINI_API_KEY | Optional | Google Gemini key for AI Academy RAG features |
+Create a `.env` file in the root directory:
+
+```env
+# NextAuth / JWT Secret
+NEXTAUTH_SECRET="your-random-secret-key-minimum-32-characters"
+NEXTAUTH_URL="http://localhost:3000"
+
+# Database connection string
+DATABASE_URL="file:./prisma/dev.db"
+
+# Optional: Google Gemini API key for AI RAG chatbot
+GEMINI_API_KEY="your-google-gemini-api-key"
+```
 
 ---
 
-## API Reference
+## API Reference & Swagger Docs
 
-All API routes are under /api/ and accept Content-Type: application/json.
+The FastAPI backend automatically generates interactive Swagger OpenAPI documentation accessible live at `http://127.0.0.1:8000/docs`.
 
-### Authentication
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/auth/register | Register a new user |
-| GET | /api/auth/session | Get current session |
-| POST | /api/auth/signout | Sign out |
-
-POST /api/auth/register body:
-```json
-{
-  "email": "user@example.com",
-  "password": "securepassword",
-  "role": "BUSINESS"
-}
-```
-
-### Loans
+### Key Endpoints Overview
 
 | Method | Endpoint | Description |
 |---|---|---|
-| GET | /api/loans | Get loans (filter: ?businessId= or ?id=) |
-| POST | /api/loans | Create a new loan application |
-
-POST /api/loans body:
-```json
-{
-  "amount": 500000,
-  "interestRate": 10.5,
-  "tenure": 12,
-  "bankName": "SBI",
-  "accountNum": "1234567890",
-  "ifsc": "SBIN0000001"
-}
-```
-
-### Campaigns
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/campaigns | List campaigns (filter: ?sector=, ?region=, ?status=, ?businessId=) |
-| POST | /api/campaigns | Create a new fundraising campaign |
-| POST | /api/campaigns/invest | Invest in a campaign |
-
-POST /api/campaigns/invest body:
-```json
-{
-  "campaignId": "uuid",
-  "amount": 50000,
-  "userId": "uuid"
-}
-```
-
-### Credit Scoring
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/credit/evaluate | Get scoring engine metadata and weights |
-| POST | /api/credit/evaluate | Run credit evaluation and get score |
-
-POST /api/credit/evaluate body:
-```json
-{
-  "annualRevenue": 2000000,
-  "netProfitMargin": 12,
-  "cashFlowVariance": 20,
-  "existingDebt": 300000,
-  "repaymentHistory": 80,
-  "businessAge": 3,
-  "gstFilingScore": 85,
-  "industryRiskLevel": "medium"
-}
-```
-
-Response:
-```json
-{
-  "success": true,
-  "data": {
-    "creditScore": 742,
-    "riskCategory": "Low",
-    "eligibilityTier": "Tier 1 - Prime",
-    "recommendedLoanAmount": 1500000,
-    "interestRate": 10.5,
-    "factorContributions": [...],
-    "positives": ["Strong repayment history"],
-    "improvements": ["Reduce existing debt"]
-  }
-}
-```
-
-### Analytics
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/analytics/user?userId=id | Investor portfolio analytics |
-| GET | /api/analytics/business?businessId=id | Business performance analytics |
-
-### AI / Chat
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | /api/chat | Query the knowledge base chatbot |
-| POST | /api/rag | Query the Gemini RAG pipeline |
-
-POST /api/chat body:
-```json
-{ "message": "How do I apply for a MUDRA loan?" }
-```
-
-### Repayments
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/repayments?loanId=id | Get repayment schedule for a loan |
-| POST | /api/repayments | Record an EMI payment |
-
-### Lending Circles
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/lending-circles | List all lending circles |
-| POST | /api/lending-circles | Create or join a lending circle |
-
-### Admin
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/admin/users | Get all users |
-| PATCH | /api/admin/users | Update KYC status or role |
-| GET | /api/admin/businesses | Get all business profiles |
-| PATCH | /api/admin/businesses | Approve or reject a business |
-
-### Business Profile
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/business/profile?userId=id | Get business profile |
-| POST | /api/business/profile | Create business profile |
-| PATCH | /api/business/profile | Update business profile |
-
-### Investments
-
-| Method | Endpoint | Description |
-|---|---|---|
-| GET | /api/user/investments?userId=id | Get investor portfolio |
-
----
-
-## Pages and Routes
-
-### Public Routes
-
-| Path | Description |
-|---|---|
-| / | Landing page |
-| /about | About EmpowerMSME |
-| /impact | Platform impact metrics |
-| /marketplace | Browse MSME businesses |
-| /academy | Free educational content |
-| /sms-spam-check | SMS fraud detection |
-
-### Auth Routes
-
-| Path | Description |
-|---|---|
-| /auth/select | Choose your role |
-| /auth/business/login | Business login |
-| /auth/business/register | MSME registration |
-| /auth/user/login | Investor login |
-| /auth/user/register | Investor registration |
-| /admin/login | Admin secure login |
-
-### Business Portal (/business/*)
-
-| Path | Description |
-|---|---|
-| /business/dashboard | KPI overview |
-| /business/loans | Loan applications and tracker |
-| /business/campaigns | Campaign management |
-| /business/credit-score | AI credit scoring wizard |
-| /business/rbf | Revenue-based financing |
-| /business/lending-circles | P2P lending circles |
-| /business/repayments | EMI tracker |
-| /business/funding | Funding opportunities |
-| /business/ai-academy | AI knowledge chatbot |
-| /business/story-builder | Pitch generator |
-| /business/analytics | Business analytics |
-| /business/messages | Investor messages |
-| /business/profile | Profile and KYC |
-| /business/settings | Account settings |
-
-### Investor Portal (/user/*)
-
-| Path | Description |
-|---|---|
-| /user/dashboard | Portfolio overview |
-| /user/campaigns | Browse and invest |
-| /user/explore | Discover MSMEs |
-| /user/applications | Investment applications |
-| /user/analytics | Portfolio analytics |
-| /user/academy | Learning modules |
-| /user/chatbot | AI assistant |
-| /user/profile | Investor profile |
-| /user/settings | Account settings |
-
-### Admin Portal (/admin/*)
-
-| Path | Description |
-|---|---|
-| /admin/dashboard | Platform KPIs |
-| /admin/users | User management |
-| /admin/businesses | Business verification |
-| /admin/loans | Loan oversight |
-| /admin/campaigns | Campaign moderation |
-| /admin/analytics | Platform analytics |
-| /admin/audit | Audit log viewer |
-| /admin/security | Security console |
-| /admin/settings | Platform configuration |
-
----
-
-## Key Components
-
-### MetricCard
-Animated KPI counter card with spring-based number animation, trend indicator, and icon.
-
-```jsx
-<MetricCard
-  title="Total Invested"
-  value={125000}
-  prefix="Rs"
-  change={+12.5}
-  description="Across 8 campaigns"
-  icon={TrendingUp}
-  iconColor="text-emerald-500"
-  iconBg="bg-emerald-500/10"
-  delay={0.1}
-/>
-```
-
-### CreditGauge
-SVG semicircle gauge rendering credit scores (300-900) with animated fill and colour zones:
-- Red: 300-499 (Poor / High Risk)
-- Amber: 500-649 (Fair / Medium Risk)
-- Green: 650-900 (Good to Excellent / Low Risk)
-
-```jsx
-<CreditGauge score={742} size={220} animate />
-```
-
-### DocumentDropzone
-Drag-and-drop and click-to-upload file zone. Accepts PDF, JPG, PNG up to 10MB. Displays uploaded file list with check icons.
-
-### GlobalFooter
-Compact site-wide footer with Platform, Resources, and Contact columns. Uses shrink-0 to prevent overflow in flex layouts.
-
-### Sidebar Components
-BusinessSidebar, UserSidebar, and AdminSidebar are collapsible role-specific navigation components with grouped icon and label links, active state highlighting, and a logout button.
-
----
-
-## Authentication
-
-EmpowerMSME uses NextAuth.js with a Credentials Provider (email + bcrypt password).
-
-### Flow
-
-1. User visits /auth/select and picks a role
-2. Fills registration form - POST /api/auth/register
-   - Password hashed with bcryptjs (12 rounds)
-   - User record created with role and PENDING kycStatus
-3. Redirected to login - NextAuth validates credentials
-4. JWT issued containing id, email, role, kycStatus
-5. JWT stored in httpOnly cookie (30-day session)
-6. useAuth() hook exposes the user object throughout the app
-7. middleware.js protects /business/*, /user/*, /admin/* routes
-
-### Sandbox Mode
-For demo/testing without a real DB account, the auth context falls back to localStorage - useful for rapid development.
+| `POST` | `/api/auth/register` | Register a new business or investor user |
+| `POST` | `/api/auth/login` | Login and receive JWT access token |
+| `GET` | `/api/auth/me` | Retrieve profile and permissions of authenticated user |
+| `GET` | `/api/loans` | List business loans or filter by loan ID |
+| `POST` | `/api/loans` | Submit a new loan application |
+| `GET` | `/api/campaigns` | Browse fundraising campaigns (filter by sector/region) |
+| `POST` | `/api/campaigns` | Launch a fundraising campaign |
+| `POST` | `/api/campaigns/invest` | Invest in an active MSME campaign |
+| `GET` | `/api/repayments` | View EMI amortization ledger and upcoming dues |
+| `POST` | `/api/repayments` | Record an EMI repayment transaction |
+| `GET` | `/api/credit/evaluate` | Get credit engine scoring weights and risk tiers |
+| `POST` | `/api/credit/evaluate` | Run 7-factor transparent credit scoring evaluation |
+| `GET` | `/api/lending-circles` | List community P2P lending circles |
+| `POST` | `/api/lending-circles` | Create or join a mutual lending circle |
+| `GET` | `/api/analytics/business` | MSME revenue trends, funding progress, and loan health |
+| `GET` | `/api/analytics/user` | Investor portfolio value, ROI, and distributions |
+| `GET` | `/api/admin/users` | Admin KYC review and user management |
+| `POST` | `/api/chat` | Query the LangChain + Gemini RAG knowledge assistant |
 
 ---
 
 ## AI Features
 
-### Credit Scoring Engine (/api/credit/evaluate)
-A fully transparent weighted linear model - not a black-box. Every factor and weight is disclosed:
+### 1. Credit Scoring Engine (`/api/credit/evaluate`)
+A fully transparent, explainable weighted linear model that scores businesses on alternative financial indicators:
 
 | Factor | Weight | Description |
 |---|---|---|
 | Repayment History | 25% | Past loan repayment track record |
-| Annual Revenue | 20% | Business revenue (log-normalized) |
+| Annual Revenue | 20% | Business turnover scale |
 | Net Profit Margin | 15% | Profitability percentage |
-| Cash Flow Stability | 15% | Inverse of cash flow variance |
+| Cash Flow Stability | 15% | Inverse of monthly revenue variance |
 | Debt-to-Income | 10% | Existing debt relative to revenue |
 | Business Age | 10% | Years in operation |
-| GST Filing Consistency | 5% | Percentage of GST returns filed on time |
+| GST Filing Consistency | 5% | Timeliness of GST return filings |
 
-Score to Tier mapping:
+### 2. AI Knowledge Academy (RAG Pipeline)
+RAG-powered conversational assistant using LangChain and Google Gemini over official Indian MSME schemes:
+* MUDRA Loans (Shishu, Kishore, Tarun)
+* PMEGP (Prime Minister's Employment Generation Programme)
+* GST Registration & Composition Scheme
+* SIDBI Development Schemes
+* Revenue-Based Financing models
 
-| Score | Category | Tier | Typical Rate |
-|---|---|---|---|
-| 750-900 | Excellent | Tier 1 - Prime | 8-10% p.a. |
-| 650-749 | Good | Tier 2 - Standard | 10-13% p.a. |
-| 500-649 | Fair | Tier 3 - Subprime | 13-18% p.a. |
-| 300-499 | Poor | Not Eligible | - |
-
-### AI Knowledge Academy
-RAG-powered chatbot with local MSME knowledge base covering:
-- MUDRA Loans (Shishu, Kishore, Tarun tiers)
-- PMEGP (Prime Minister's Employment Generation Programme)
-- GST registration, filing, and compliance
-- SIDBI loan schemes
-- Revenue-Based Financing
-- P2P lending regulations
-
-### AI Story Builder
-Multi-step wizard that generates 3 pitch variants from business inputs:
-- Professional - Formal investor-facing pitch with financial projections
-- Emotional - Human-interest community impact narrative
-- Data-Driven - Numbers and metrics-focused pitch content
+### 3. AI Story Builder
+Automatically synthesizes business financial metrics into 3 distinct fundraising pitch variations:
+* **Professional:** Formal investor-facing deck with projected ROI.
+* **Emotional:** Grassroots community impact and job creation narrative.
+* **Data-Driven:** Pure metrics, margin profiles, and payback horizons.
 
 ---
 
 ## Scripts
 
 ```bash
-# Development with hot reload (Turbopack)
+# Run Next.js Frontend
 npm run dev
 
-# Production build
+# Run Python FastAPI Backend
+npm run backend:dev
+
+# Seed FastAPI Database with Demo Users
+npm run backend:seed
+
+# Run FastAPI 12-Point Automated Integration Tests
+npm run backend:test
+
+# Build Next.js for Production
 npm run build
-
-# Start production server
-npm start
-
-# Lint code
-npm run lint
-
-# Push Prisma schema changes to database
-npx prisma db push
-
-# Open Prisma Studio (visual database browser)
-npx prisma studio
-
-# Seed database with sample data
-node scripts/seed.mjs
-
-# Run API integration tests
-node scripts/test.mjs
 ```
-
----
-
-## Deployment
-
-### Vercel (Recommended)
-
-1. Push code to GitHub
-2. Import the repository at vercel.com/new
-3. Add environment variables in Vercel project settings
-4. Deploy - Vercel auto-detects Next.js and configures build settings
-
-**Note for production:** Replace the SQLite DATABASE_URL with a PostgreSQL connection string (Supabase, Neon, or Railway). Update prisma/schema.prisma to use provider = "postgresql" and run npx prisma migrate deploy.
-
-### Docker (Self-hosted)
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npx prisma generate
-RUN npm run build
-EXPOSE 3000
-CMD ["npm", "start"]
-```
-
-```bash
-docker build -t empower-msme .
-docker run -p 3000:3000 --env-file .env empower-msme
-```
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch: git checkout -b feature/your-feature-name
-3. Commit changes: git commit -m "feat: your feature description"
-4. Push to the branch: git push origin feature/your-feature-name
-5. Open a Pull Request with a detailed description
 
 ---
 
@@ -785,4 +364,4 @@ This project is licensed under the MIT License.
 
 ---
 
-EmpowerMSME - Building an inclusive digital financial ecosystem for MSMEs across India
+**EmpowerMSME** — Empowering India's grassroots enterprises through transparent technology and inclusive capital.
