@@ -6,7 +6,10 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "eslint .",
-    "start": "next start"
+    "start": "next start",
+    "backend:dev": "python backend/run.py",
+    "backend:seed": "python backend/seed.py",
+    "backend:test": "python backend/test_api.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

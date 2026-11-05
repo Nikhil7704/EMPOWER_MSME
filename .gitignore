@@ -26,3 +26,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 /lib/generated/prisma
+
+# Python
+backend/venv/
+backend/.venv/
+backend/*.db
+backend/*.sqlite*
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
